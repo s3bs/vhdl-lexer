@@ -119,6 +119,7 @@ DEFAULT is the default lexical token returned when no MATCHES."
 ;  "detect bitstring literals and create IDENTIFIER token"
 ;  "[A-Za-z]\\(_?[a-zA-Z0-9]\\)*"
 ;  'IDENTIFIER)
+;; LRM 2002 excluding procedural and reference
 (define-lex-string-type-case-insensitive-analyzer vhdl-lex-identifier
   "detect either and return either KEYWORDS or IDENTIFIERS"
   "[A-Za-z]\\(_?[a-zA-Z0-9]\\)*"
@@ -182,7 +183,7 @@ DEFAULT is the default lexical token returned when no MATCHES."
     ( OUT .           "out")
     ( PACKAGE .       "package")
     ( PORT .          "port")
-    ( POSTPONED .     "postponed")
+    ( POSTPONED .     "postponed)"
     ( PROCEDURE .     "procedure")
     ( PROCESS .       "process")
     ( PROTECTED .     "protected")
@@ -225,7 +226,7 @@ DEFAULT is the default lexical token returned when no MATCHES."
 
 
 (define-lex-regex-analyzer vhdl-lex-charliteral
-  "detect character  literals and create CHARLITERAL token"
+  "detect character literals and create CHARLITERAL token"
   ;; http://www.eda-stds.org/isac/IRs-VHDL-93/IR1045.txt
   "'[^\n\r]'"
   (let ((last-token (car semantic-lex-token-stream)))
@@ -237,12 +238,11 @@ DEFAULT is the default lexical token returned when no MATCHES."
               (eq 'IDENTIFIER (semantic-lex-token-class last-token))
               (eq 'STRING (semantic-lex-token-class last-token))
               (eq 'CHARLITERAL (semantic-lex-token-class last-token))
-              (and (eq 'DELIMITER (semantic-lex-token-class last-token))
-                   (or (string= "]" (semantic-lex-token-text last-token))
-                       (string= ")" (semantic-lex-token-text last-token))))))
+              (eq 'RPAREN (semantic-lex-token-class last-token))
+              (eq 'RSQUARE (semantic-lex-token-class last-token))))
         (progn
           (semantic-lex-push-token
-           (semantic-lex-token 'DELIMITER
+           (semantic-lex-token 'TICK
                                (match-beginning 0)
                                (+ 1 (match-beginning 0))))
           (setq semantic-lex-end-point (+ 1 (match-beginning 0))))
@@ -260,8 +260,31 @@ DEFAULT is the default lexical token returned when no MATCHES."
   "TODO docstring"
   (rx (or "=>" "**" ":=" "/=" ">=" "<=" "<>"
           (in "&'()*+,-./:;<=>|[]")))
-  '(( COMMA     . ",")
-    ( SEMICOLON . ";"))
+  '(( ARROW .     "=>")
+    ( EXPT .      "**")
+    ( ASSIGN .    ":=")
+    ( NEQ .       "/=")
+    ( GE .        ">=")
+    ( LE .        "<=")
+    ( BOX .       "<>")
+    ( AMP .       "&")
+    ( TICK .      "'")
+    ( LPAREN .    "(")
+    ( RPAREN .    ")")
+    ( MULT .      "*")
+    ( PLUS .      "+")
+    ( COMMA .     ",")
+    ( MINUS .     "-")
+    ( DOT .       ".")
+    ( DIV .       "/")
+    ( COLON  .    ":")
+    ( SEMICOLON . ";")
+    ( LT .        "<")
+    ( EQ .        "=")
+    ( GT .        ">")
+    ( BAR .       "|")
+    ( LSQUARE .   "[")
+    ( RSQUARE .   "]"))
   'DELIMITER)
 
 (define-lex-simple-regex-analyzer vhdl-lex-string
