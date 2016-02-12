@@ -183,7 +183,7 @@ DEFAULT is the default lexical token returned when no MATCHES."
     ( OUT .           "out")
     ( PACKAGE .       "package")
     ( PORT .          "port")
-    ( POSTPONED .     "postponed)"
+    ( POSTPONED .     "postponed")
     ( PROCEDURE .     "procedure")
     ( PROCESS .       "process")
     ( PROTECTED .     "protected")
