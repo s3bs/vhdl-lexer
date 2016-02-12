@@ -27,6 +27,13 @@
 ;; It does not support Extended Identifier!
 ;;
 ;; TODO More comments needed on how to use it within CEDET/SEMANTIC
+;;
+;; to lex a complete buffer execute the following within a VHDL buffer to get a
+;; list of all tokens
+;; (defun lex-buffer ()
+;;      (semantic-lex-init)
+;;      (setq semantic-lex-analyzer 'vhdl-lex-vhdl-lexer)
+;;      (semantic-lex-buffer))
 
 ;;; Code:
 
